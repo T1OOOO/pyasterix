@@ -264,9 +264,9 @@ class AsterixEncoder():
             elif cn.nodeName == 'Repetitive':
                 n, r = self.encode_repetitive(data_asterix, cn)
             elif cn.nodeName == 'Variable':
-                n, r = self.decode_variable(data_asterix, cn)
+                n, r = self.encode_variable(data_asterix, cn)
             elif cn.nodeName == 'Compound':
-                n, r = self.decode_compound(data_asterix, cn)
+                n, r = self.encode_compound(data_asterix, cn)
 
             if n == 0:
                 continue
