@@ -59,7 +59,7 @@ filenames = {
     63: 'config/asterix_cat063_1_3.xml',
     65: 'config/asterix_cat065_1_3.xml',
     # 65:'config/asterix_cat065_1_2.xml',
-    240: 'config/asterix_cat242_1_3.xml',
+    240: 'config/asterix_cat240_1_3.xml',
     242: 'config/asterix_cat242_1_0.xml',
     # 252:'config/asterix_cat252_6_2.xml',
     252: 'config/asterix_cat252_7_0.xml',
