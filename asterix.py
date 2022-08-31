@@ -59,6 +59,7 @@ filenames = {
     63: 'config/asterix_cat063_1_3.xml',
     65: 'config/asterix_cat065_1_3.xml',
     # 65:'config/asterix_cat065_1_2.xml',
+    240: 'config/asterix_cat242_1_3.xml',
     242: 'config/asterix_cat242_1_0.xml',
     # 252:'config/asterix_cat252_6_2.xml',
     252: 'config/asterix_cat252_7_0.xml',
@@ -301,7 +302,7 @@ class AsterixDecoder():
         self.decoded_result = {}
 
         # ------------------ cat -------------------------------
-        cat = int.from_bytes(self.bytes[0:1], byteorder='big', signed=True)
+        cat = int.from_bytes(self.bytes[0:1], byteorder='big', signed=False)
         self.p += 1
 
         try:
@@ -457,7 +458,7 @@ class AsterixDecoder():
         mask = 1 << (8 * indicator_octetslen - 1)
         indicator = 1
         for i in range(0, 8 * indicator_octetslen):
-            if i % 8 != 7:  # i is FX
+            if i % 8 == 7:  # i is FX
                 continue
 
             if indicator_octets & (mask >> i) > 0:
@@ -472,7 +473,7 @@ class AsterixDecoder():
             if cn.nodeName not in ['Fixed', 'Repetitive', 'Variable', 'Compound']:
                 continue
 
-            if index not in indicator:
+            if index not in indicators:
                 index += 1
                 continue
 
