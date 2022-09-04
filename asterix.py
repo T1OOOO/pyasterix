@@ -253,8 +253,8 @@ class AsterixEncoder():
 
             index += 1      # current node index
 
-            if index == 1:      # skip first node, it's indicator
-                continue
+            # if index == 1:      # skip first node, it's indicator
+            #     continue
 
             if index % 8 == 0:  # Fx field
                 index += 1
@@ -388,6 +388,8 @@ class AsterixDecoder():
         for bits in bitslist:
             bit_name = bits.getElementsByTagName('BitsShortName')[
                 0].firstChild.nodeValue
+            if bit_name in ['FX', 'spare']:
+                continue
 
             bit = bits.getAttribute('bit')
             if bit != '':
@@ -413,6 +415,9 @@ class AsterixDecoder():
                     scale = BitsUnit[0].getAttribute('scale')
                     results[bit_name] = results[bit_name] * float(scale)
 
+            if results[bit_name] == 0:
+                del results[bit_name]
+
         return results
 
     def decode_variable(self, datafield):
@@ -420,10 +425,13 @@ class AsterixDecoder():
 
         for fixed in datafield.getElementsByTagName('Fixed'):
             r = self.decode_fixed(fixed)
+            if 'FX' in r:
+                continue
+
             results.update(r)
-            assert 'FX' in r
-            if r['FX'] == 0:
-                break
+            #assert 'FX' in r
+            # if r['FX'] == 0:
+            #     break
 
         return results
 
@@ -456,7 +464,7 @@ class AsterixDecoder():
 
         indicators = []
         mask = 1 << (8 * indicator_octetslen - 1)
-        indicator = 1
+        indicator = 0
         for i in range(0, 8 * indicator_octetslen):
             if i % 8 == 7:  # i is FX
                 continue
@@ -497,11 +505,16 @@ if __name__ == '__main__':
     def bytes2hexstr(_bytes):
         return "".join("%02X" % b for b in _bytes)
 
-    hexstr = '15004EFF9FB35B83E40001080001014CFBA315CD2A4A0EAF0AE69555250757D74CFB330005554CFBA31189374B4CFB3319CAC08341C60A00500C000000F500004CFBB3414175D75820006A06D901'
-    ad = AsterixDecoder(bytearray.fromhex(hexstr))
-    print('decode result:', type(ad.get_result()), ad.get_result())
+    #hexstr = '15004EFF9FB35B83E40001080001014CFBA315CD2A4A0EAF0AE69555250757D74CFB330005554CFBA31189374B4CFB3319CAC08341C60A00500C000000F500004CFBB3414175D75820006A06D901'
+    #ad = AsterixDecoder(bytearray.fromhex(hexstr))
+    #print('decode result:', type(ad.get_result()), ad.get_result())
 
-    ae = AsterixEncoder(ad.get_result())
+    #ae = AsterixEncoder(ad.get_result())
+    obj = {"62": {"290": {"TRK": 1, "UAT": 1, "LOP": 1}}}
+    ae = AsterixEncoder(obj)
     hexstr2 = bytes2hexstr(ae.get_result())
     print(hexstr2)
-    assert(hexstr == hexstr2)
+
+    ad = AsterixDecoder(bytearray.fromhex(hexstr2))
+    print('decode result:', type(ad.get_result()), ad.get_result())
+    #assert(hexstr == hexstr2)
